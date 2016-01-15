@@ -97,8 +97,7 @@ class Chart(Visualization):
                 if not data:
                     raise ValueError('The data structure is empty.')
             if isinstance(data, (pd.Series, pd.DataFrame)):
-                if isinstance(data.index, pd.DatetimeIndex):
-                    self._is_datetime = True
+                self._is_datetime = isinstance(data.index, pd.DatetimeIndex) or data.index.is_type_compatible('date') or data.index.is_type_compatible('datetime')
 
             # Using a vincent KeyedList here
             self.data['table'] = (

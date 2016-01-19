@@ -488,7 +488,7 @@ class Map(Chart):
                 get_brewer = False
 
             geo_transform = Transform(
-                type='geopath', value="data", **geo_kwargs
+                type='geopath', field="data", **geo_kwargs
                 )
             transforms.append(geo_transform)
             self.data[dat['name']] = Data(

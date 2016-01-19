@@ -104,15 +104,15 @@ class TestScatter(object):
 
         scatter = Scatter([1, 2, 3])
 
-        scales = [{'domain': {'data': 'table', 'field': 'data.idx'},
+        scales = [{'domain': {'data': 'table', 'field': 'idx'},
                    'name': 'x',
                    'range': 'width',
                    'type': 'linear'},
-                  {'domain': {'data': 'table', 'field': 'data.val'},
+                  {'domain': {'data': 'table', 'field': 'val'},
                    'name': 'y',
                    'range': 'height',
                    'nice': True},
-                  {'domain': {'data': 'table', 'field': 'data.col'},
+                  {'domain': {'data': 'table', 'field': 'col'},
                    'name': 'color',
                    'range': 'category20',
                    'type': 'ordinal'}]
@@ -125,17 +125,17 @@ class TestScatter(object):
             'from': {
                 'data': 'table',
                 'transform': [
-                    {'keys': ['data.col'], 'type': 'facet'}
+                    {'keys': ['col'], 'type': 'facet'}
                 ]
             },
             'marks': [{
                 'type': 'symbol',
                 'properties': {
                     'enter': {
-                        'fill': {'field': 'data.col', 'scale': 'color'},
+                        'fill': {'field': 'col', 'scale': 'color'},
                         'size': {'value': 100},
-                        'x': {'field': 'data.idx', 'scale': 'x'},
-                        'y': {'field': 'data.val', 'scale': 'y'}}},
+                        'x': {'field': 'idx', 'scale': 'x'},
+                        'y': {'field': 'val', 'scale': 'y'}}},
             }]
         }]
 
@@ -148,15 +148,15 @@ class TestLine(object):
     def test_init(self):
         line = Line([1, 2, 3])
 
-        scales = [{'domain': {'data': 'table', 'field': 'data.idx'},
+        scales = [{'domain': {'data': 'table', 'field': 'idx'},
                    'name': 'x',
                    'type': 'linear',
                    'range': 'width'},
-                  {'domain': {'data': 'table', 'field': 'data.val'},
+                  {'domain': {'data': 'table', 'field': 'val'},
                    'name': 'y',
                    'nice': True,
                    'range': 'height'},
-                  {'domain': {'data': 'table', 'field': 'data.col'},
+                  {'domain': {'data': 'table', 'field': 'col'},
                    'name': 'color',
                    'range': 'category20',
                    'type': 'ordinal'}]
@@ -169,17 +169,17 @@ class TestLine(object):
             'from': {
                 'data': 'table',
                 'transform': [
-                    {'keys': ['data.col'], 'type': 'facet'}
+                    {'keys': ['col'], 'type': 'facet'}
                 ]
             },
             'marks': [{
                 'type': 'line',
                 'properties': {
                     'enter': {
-                        'stroke': {'field': 'data.col', 'scale': 'color'},
+                        'stroke': {'field': 'col', 'scale': 'color'},
                         'strokeWidth': {'value': 2},
-                        'x': {'field': 'data.idx', 'scale': 'x'},
-                        'y': {'field': 'data.val', 'scale': 'y'}
+                        'x': {'field': 'idx', 'scale': 'x'},
+                        'y': {'field': 'val', 'scale': 'y'}
                     }
                 }
             }]
@@ -209,15 +209,15 @@ class TestArea(object):
             {'name': 'stats',
              'source': 'table',
              'transform': [
-                 {'type': 'facet', 'keys': ['data.idx']},
-                 {'type': 'stats', 'value': 'data.val'}]}
+                 {'type': 'facet', 'keys': ['idx']},
+                 {'type': 'stats', 'value': 'val'}]}
         ]
 
         for i, data in enumerate(datas):
             nt.assert_dict_equal(stacked_area.data[i].grammar(), data)
 
         # Test area grammar
-        scales = [{'domain': {'data': 'table', 'field': 'data.idx'},
+        scales = [{'domain': {'data': 'table', 'field': 'idx'},
                    'name': 'x',
                    'range': 'width',
                    'zero': False,
@@ -226,7 +226,7 @@ class TestArea(object):
                    'name': 'y',
                    'nice': True,
                    'range': 'height'},
-                  {'domain': {'data': 'table', 'field': 'data.col'},
+                  {'domain': {'data': 'table', 'field': 'col'},
                    'name': 'color',
                    'range': 'category20',
                    'type': 'ordinal'}]
@@ -239,18 +239,18 @@ class TestArea(object):
             'from': {
                 'data': 'table',
                 'transform': [
-                    {'type': 'facet', 'keys': ['data.col']},
-                    {'type': 'stack', 'height': 'data.val',
-                     'point': 'data.idx'}]
+                    {'type': 'facet', 'keys': ['col']},
+                    {'type': 'stack', 'height': 'val',
+                     'point': 'idx'}]
             },
             'marks': [{
                 'type': 'area',
                 'properties': {
                     'enter': {
-                        'x': {'field': 'data.idx', 'scale': 'x'},
+                        'x': {'field': 'idx', 'scale': 'x'},
                         'y': {'field': 'y', 'scale': 'y'},
                         'y2': {'field': 'y2', 'scale': 'y'},
-                        'fill': {'field': 'data.col', 'scale': 'color'},
+                        'fill': {'field': 'col', 'scale': 'color'},
                         'interpolate': {'value': 'monotone'}
                     }
                 }
@@ -282,14 +282,14 @@ class TestBar(object):
             {'name': 'stats',
              'source': 'table',
              'transform': [
-                 {'type': 'facet', 'keys': ['data.idx']},
-                 {'type': 'stats', 'value': 'data.val'}]}
+                 {'type': 'facet', 'keys': ['idx']},
+                 {'type': 'stats', 'value': 'val'}]}
         ]
         for i, data in enumerate(datas):
             nt.assert_dict_equal(stacked_bar.data[i].grammar(), data)
 
         # Test bar grammar
-        scales = [{'domain': {'data': 'table', 'field': 'data.idx'},
+        scales = [{'domain': {'data': 'table', 'field': 'idx'},
                    'name': 'x',
                    'range': 'width',
                    'zero': False,
@@ -298,7 +298,7 @@ class TestBar(object):
                    'name': 'y',
                    'nice': True,
                    'range': 'height'},
-                  {'domain': {'data': 'table', 'field': 'data.col'},
+                  {'domain': {'data': 'table', 'field': 'col'},
                    'name': 'color',
                    'range': 'category20',
                    'type': 'ordinal'}]
@@ -311,19 +311,19 @@ class TestBar(object):
             'from': {
                 'data': 'table',
                 'transform': [
-                    {'type': 'facet', 'keys': ['data.col']},
-                    {'type': 'stack', 'height': 'data.val',
-                     'point': 'data.idx'}]
+                    {'type': 'facet', 'keys': ['col']},
+                    {'type': 'stack', 'height': 'val',
+                     'point': 'idx'}]
             },
             'marks': [{
                 'type': 'rect',
                 'properties': {
                     'enter': {
-                        'x': {'field': 'data.idx', 'scale': 'x'},
+                        'x': {'field': 'idx', 'scale': 'x'},
                         'width': {'band': True, 'offset': -1, 'scale': 'x'},
                         'y': {'field': 'y', 'scale': 'y'},
                         'y2': {'field': 'y2', 'scale': 'y'},
-                        'fill': {'field': 'data.col', 'scale': 'color'}
+                        'fill': {'field': 'col', 'scale': 'color'}
                     }
                 }
             }]
@@ -361,16 +361,16 @@ class TestGroupedBar(object):
             nt.assert_dict_equal(group.data[i].grammar(), data)
 
         # Test grouped bar grammar
-        scales = [{'domain': {'data': 'table', 'field': 'data.idx'},
+        scales = [{'domain': {'data': 'table', 'field': 'idx'},
                    'name': 'x',
                    'padding': 0.2,
                    'range': 'width',
                    'type': 'ordinal'},
-                  {'domain': {'data': 'table', 'field': 'data.val'},
+                  {'domain': {'data': 'table', 'field': 'val'},
                    'name': 'y',
                    'nice': True,
                    'range': 'height'},
-                  {'domain': {'data': 'table', 'field': 'data.col'},
+                  {'domain': {'data': 'table', 'field': 'col'},
                    'name': 'color',
                    'range': 'category20',
                    'type': 'ordinal'}]
@@ -382,16 +382,16 @@ class TestGroupedBar(object):
             'type': 'group',
             'from': {
                 'data': 'table',
-                'transform': [{'keys': ['data.idx'], 'type': 'facet'}]
+                'transform': [{'keys': ['idx'], 'type': 'facet'}]
             },
             'marks': [{
                 'type': 'rect',
                 'properties': {
                     'enter': {
-                        'fill': {'field': 'data.col', 'scale': 'color'},
+                        'fill': {'field': 'col', 'scale': 'color'},
                         'width': {'band': True, 'offset': -1, 'scale': 'pos'},
-                        'x': {'field': 'data.col', 'scale': 'pos'},
-                        'y': {'field': 'data.val', 'scale': 'y'},
+                        'x': {'field': 'col', 'scale': 'pos'},
+                        'y': {'field': 'val', 'scale': 'y'},
                         'y2': {'scale': 'y', 'value': 0}}
                 }
             }],
@@ -402,7 +402,7 @@ class TestGroupedBar(object):
                 }
             },
             'scales': [{
-                'domain': {'field': 'data.col'},
+                'domain': {'field': 'col'},
                 'name': 'pos',
                 'range': 'width',
                 'type': 'ordinal'
@@ -421,7 +421,7 @@ class TestPie(object):
         axes = []
 
         scales = [{
-            "domain": {"data": "table", "field": "data.idx"},
+            "domain": {"data": "table", "field": "idx"},
             "name": "color",
             "range": "category10",
             "type": "ordinal"
@@ -431,7 +431,7 @@ class TestPie(object):
             "type": "arc",
             "from": {
                 "data": "table",
-                "transform": [{"type": "pie", "value": "data.val"}]
+                "transform": [{"type": "pie", "value": "val"}]
             },
             "properties": {
                 "enter": {
@@ -442,7 +442,7 @@ class TestPie(object):
                     "outerRadius": {"value": 250},
                     "startAngle": {"field": "startAngle"},
                     "stroke": {"value": "white"},
-                    "fill": {"field": "data.idx", "scale": "color"}
+                    "fill": {"field": "idx", "scale": "color"}
                 }
             }
         }]
@@ -657,7 +657,7 @@ class TestWord(object):
 
         axes = []
 
-        scales = [{'domain': {'data': 'table', 'field': 'data.idx'},
+        scales = [{'domain': {'data': 'table', 'field': 'idx'},
                    'name': 'color',
                    'range': 'category10',
                    'type': 'ordinal'}]
@@ -670,10 +670,10 @@ class TestWord(object):
                     'align': {'value': 'center'},
                     'angle': {'field': 'angle'},
                     'baseline': {'value': 'middle'},
-                    'fill': {'field': 'data.idx', 'scale': 'color'},
+                    'fill': {'field': 'idx', 'scale': 'color'},
                     'font': {'field': 'font'},
                     'fontSize': {'field': 'fontSize'},
-                    'text': {'field': 'data.idx'},
+                    'text': {'field': 'idx'},
                     'x': {'field': 'x'},
                     'y': {'field': 'y'}
                 }

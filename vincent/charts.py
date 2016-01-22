@@ -476,8 +476,10 @@ class Map(Chart):
                     )
                 key_join = '.'.join(['data', map_key[dat['name']]])
                 data_transform = Transform(
-                    type='zip', key=key_join, with_='table',
-                    with_key='x', as_='value', default='noval'
+                    type='zip', field=key_join,
+                    # with_='table',
+                    # with_key='x', 
+                    as_=['value'], default='noval'
                     )
                 transforms.append(data_transform)
                 null_trans = Transform(
@@ -563,7 +565,7 @@ class Pie(Chart):
             domain=DataRef(data="table", field="idx"))
 
         transform = MarkRef(
-            data="table", transform=[Transform(type="pie", value="val")])
+            data="table", transform=[Transform(type="pie", field="val")])
 
         enter_props = PropertySet(
             x=ValueRef(group="width", mult=0.5),

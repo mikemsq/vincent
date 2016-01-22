@@ -25,15 +25,23 @@ from vincent._compat import str_types
 
 TMPL_ENV = Environment(loader=PackageLoader('vincent', 'templates'))
 
+
+def _get_tuple_type_names(tuple_type):
+    if type(tuple_type) is tuple:
+        type_names = ', '.join(_get_tuple_type_names(t) for t in tuple_type)   # tuple may contain other tuples
+        return '({0})'.format(type_names)
+    else:
+        return tuple_type.__name__
+
+        
 def _assert_is_type(name, value, value_type):
     """Assert that a value must be a given type."""
     if not isinstance(value, value_type):
         if type(value_type) is tuple:
-            types = ', '.join(t.__name__ for t in value_type)
-            raise ValueError('{0} must be one of ({1})'.format(name, types))
+            types = _get_tuple_type_names(value_type)
+            raise ValueError('{0} must be one of {1}'.format(name, types))
         else:
-            raise ValueError('{0} must be {1}'
-                             .format(name, value_type.__name__))
+            raise ValueError('{0} must be {1}'.format(name, value_type.__name__))
 
 
 class ValidationError(Exception):

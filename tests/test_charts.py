@@ -11,6 +11,7 @@ import nose.tools as nt
 from vincent.charts import (data_type, Chart, Bar, Scatter, Line, Area,
                             GroupedBar, Map, Pie, Word)
 
+nt.assert_equal.__self__.maxDiff = None                            
 
 def chart_runner(chart, scales, axes, marks):
     """Iterate through each chart element for check for contents"""
@@ -125,7 +126,7 @@ class TestScatter(object):
             'from': {
                 'data': 'table',
                 'transform': [
-                    {'keys': ['col'], 'type': 'facet'}
+                    {'groupby': ['col'], 'type': 'facet'}
                 ]
             },
             'marks': [{
@@ -169,7 +170,7 @@ class TestLine(object):
             'from': {
                 'data': 'table',
                 'transform': [
-                    {'keys': ['col'], 'type': 'facet'}
+                    {'groupby': ['col'], 'type': 'facet'}
                 ]
             },
             'marks': [{
@@ -192,6 +193,8 @@ class TestArea(object):
     """Test Area and Stacked Area Chart"""
 
     def test_init(self):
+        self.maxDiff = None
+
         area = Area([1, 2, 3])
         stacked_area = Area({'x': [1, 2, 3], 'y': [4, 5, 6], 'z': [7, 8, 9]},
                             iter_idx='x')
@@ -209,8 +212,9 @@ class TestArea(object):
             {'name': 'stats',
              'source': 'table',
              'transform': [
-                 {'type': 'facet', 'keys': ['idx']},
-                 {'type': 'stats', 'value': 'val'}]}
+                 {'type': 'aggregate',
+                  'groupby': ['idx'],
+                  'summarize': [{'field': 'val', 'ops': ['sum']}]}]}
         ]
 
         for i, data in enumerate(datas):
@@ -222,10 +226,11 @@ class TestArea(object):
                    'range': 'width',
                    'zero': False,
                    'type': 'linear'},
-                  {'domain': {'data': 'stats', 'field': 'sum'},
+                  {'domain': {'data': 'stats', 'field': 'sum_val'},
                    'name': 'y',
                    'nice': True,
-                   'range': 'height'},
+                   'range': 'height',
+                   'type': 'linear'},
                   {'domain': {'data': 'table', 'field': 'col'},
                    'name': 'color',
                    'range': 'category20',
@@ -239,17 +244,17 @@ class TestArea(object):
             'from': {
                 'data': 'table',
                 'transform': [
-                    {'type': 'facet', 'keys': ['col']},
-                    {'type': 'stack', 'height': 'val',
-                     'point': 'idx'}]
+                    {'type': 'stack', 'field': 'val',
+                     'groupby': ['idx'], 'sortby': ['col']},
+                    {'type': 'facet', 'groupby': ['col']}]
             },
             'marks': [{
                 'type': 'area',
                 'properties': {
                     'enter': {
                         'x': {'field': 'idx', 'scale': 'x'},
-                        'y': {'field': 'y', 'scale': 'y'},
-                        'y2': {'field': 'y2', 'scale': 'y'},
+                        'y': {'field': 'layout_start', 'scale': 'y'},
+                        'y2': {'field': 'layout_end', 'scale': 'y'},
                         'fill': {'field': 'col', 'scale': 'color'},
                         'interpolate': {'value': 'monotone'}
                     }
@@ -282,8 +287,9 @@ class TestBar(object):
             {'name': 'stats',
              'source': 'table',
              'transform': [
-                 {'type': 'facet', 'keys': ['idx']},
-                 {'type': 'stats', 'value': 'val'}]}
+                 {'type': 'aggregate',
+                  'groupby': ['idx'],
+                  'summarize': [{'field': 'val', 'ops': ['sum']}]}]}
         ]
         for i, data in enumerate(datas):
             nt.assert_dict_equal(stacked_bar.data[i].grammar(), data)
@@ -292,12 +298,12 @@ class TestBar(object):
         scales = [{'domain': {'data': 'table', 'field': 'idx'},
                    'name': 'x',
                    'range': 'width',
-                   'zero': False,
                    'type': 'ordinal'},
-                  {'domain': {'data': 'stats', 'field': 'sum'},
+                  {'domain': {'data': 'stats', 'field': 'sum_val'},
                    'name': 'y',
                    'nice': True,
-                   'range': 'height'},
+                   'range': 'height',
+                   'type': 'linear'},
                   {'domain': {'data': 'table', 'field': 'col'},
                    'name': 'color',
                    'range': 'category20',
@@ -307,26 +313,22 @@ class TestBar(object):
                 {'scale': 'y', 'type': 'y'}]
 
         marks = [{
-            'type': 'group',
+            'type': 'rect',
             'from': {
                 'data': 'table',
                 'transform': [
-                    {'type': 'facet', 'keys': ['col']},
-                    {'type': 'stack', 'height': 'val',
-                     'point': 'idx'}]
+                    {'type': 'stack', 'field': 'val',
+                     'groupby': ['idx'], 'sortby': ['col']}]
             },
-            'marks': [{
-                'type': 'rect',
-                'properties': {
-                    'enter': {
-                        'x': {'field': 'idx', 'scale': 'x'},
-                        'width': {'band': True, 'offset': -1, 'scale': 'x'},
-                        'y': {'field': 'y', 'scale': 'y'},
-                        'y2': {'field': 'y2', 'scale': 'y'},
-                        'fill': {'field': 'col', 'scale': 'color'}
-                    }
+            'properties': {
+                'enter': {
+                    'x': {'field': 'idx', 'scale': 'x'},
+                    'width': {'band': True, 'scale': 'x', 'offset': -1},
+                    'y': {'field': 'layout_start', 'scale': 'y'},
+                    'y2': {'field': 'layout_end', 'scale': 'y'},
+                    'fill': {'field': 'col', 'scale': 'color'}
                 }
-            }]
+            }
         }]
 
         chart_runner(bar, scales, axes, marks)
@@ -382,14 +384,14 @@ class TestGroupedBar(object):
             'type': 'group',
             'from': {
                 'data': 'table',
-                'transform': [{'keys': ['idx'], 'type': 'facet'}]
+                'transform': [{'groupby': ['idx'], 'type': 'facet'}]
             },
             'marks': [{
                 'type': 'rect',
                 'properties': {
                     'enter': {
                         'fill': {'field': 'col', 'scale': 'color'},
-                        'width': {'band': True, 'offset': -1, 'scale': 'pos'},
+                        'width': {'band': True, 'scale': 'pos'},
                         'x': {'field': 'col', 'scale': 'pos'},
                         'y': {'field': 'val', 'scale': 'y'},
                         'y2': {'scale': 'y', 'value': 0}}
@@ -431,7 +433,7 @@ class TestPie(object):
             "type": "arc",
             "from": {
                 "data": "table",
-                "transform": [{"type": "pie", "value": "val"}]
+                "transform": [{"type": "pie", "field": "val"}]
             },
             "properties": {
                 "enter": {
@@ -489,7 +491,7 @@ class TestMaps(object):
                       'scale': 200,
                       'translate': [480, 250],
                       'type': 'geopath',
-                      'value': 'data'
+                      'field': 'data'
                   }]
                   }]
 
@@ -547,7 +549,7 @@ class TestMaps(object):
                       'scale': 200,
                       'translate': [480, 250],
                       'type': 'geopath',
-                      'value': 'data'
+                      'field': 'data'
                   }],
                   },
                  {'name': 'table',
@@ -562,12 +564,12 @@ class TestMaps(object):
                   'format': {'feature': 'topo_feature', 'type': 'topojson'},
                   'transform': [
                       {
-                          'as': 'value',
+                          'as': ['value'],
                           'default': 'noval',
-                          'key': 'data.properties.id',
-                          'type': 'zip',
-                          'with': 'table',
-                          'withKey': 'data.x'
+                          'field': 'data.properties.id',
+                          'type': 'zip'#,
+                          # 'with': 'table',
+                          # 'withKey': 'x'
                       },
                       {
                           'test': "d.path!='noval' && d.value!='noval'",
@@ -580,7 +582,7 @@ class TestMaps(object):
                           'scale': 200,
                           'translate': [480, 250],
                           'type': 'geopath',
-                          'value': 'data'
+                          'field': 'data'
                       }]
                   }
                  ]

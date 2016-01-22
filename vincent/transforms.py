@@ -363,7 +363,7 @@ class Transform(GrammarClass):
     def scale(value):
         pass
 
-    @grammar((int, str_types))
+    @grammar((int, dict))
     def rotate(value):
         pass
 
@@ -417,7 +417,7 @@ class Transform(GrammarClass):
     def end_angle(value):
         pass
 
-    @grammar(bool)
+    @grammar((bool, list))
     def sort(value):
         pass
 

@@ -11,7 +11,8 @@ import nose.tools as nt
 from vincent.charts import (data_type, Chart, Bar, Scatter, Line, Area,
                             GroupedBar, Map, Pie, Word)
 
-nt.assert_equal.__self__.maxDiff = None                            
+nt.assert_equal.__self__.maxDiff = None
+
 
 def chart_runner(chart, scales, axes, marks):
     """Iterate through each chart element for check for contents"""
@@ -567,7 +568,7 @@ class TestMaps(object):
                           'as': ['value'],
                           'default': 'noval',
                           'field': 'data.properties.id',
-                          'type': 'zip'#,
+                          'type': 'zip'
                           # 'with': 'table',
                           # 'withKey': 'x'
                       },

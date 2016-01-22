@@ -97,7 +97,9 @@ class Chart(Visualization):
                 if not data:
                     raise ValueError('The data structure is empty.')
             if isinstance(data, (pd.Series, pd.DataFrame)):
-                self._is_datetime = isinstance(data.index, pd.DatetimeIndex) or data.index.is_type_compatible('date') or data.index.is_type_compatible('datetime')
+                self._is_datetime = isinstance(data.index, pd.DatetimeIndex) or\
+                    data.index.is_type_compatible('date') or\
+                    data.index.is_type_compatible('datetime')
 
             # Using a vincent KeyedList here
             self.data['table'] = (
@@ -375,7 +377,8 @@ class GroupedBar(Chart):
                                          properties=mark_props_text))
 
         mark_group_from = MarkRef(data='table',
-            transform=[Transform(type='facet', groupby=['idx'])])
+                                  transform=[Transform(type='facet',
+                                                       groupby=['idx'])])
 
         mark_group_props = MarkProperties(
             enter=PropertySet(x=ValueRef(scale='x', field='key'),
@@ -478,7 +481,7 @@ class Map(Chart):
                 data_transform = Transform(
                     type='zip', field=key_join,
                     # with_='table',
-                    # with_key='x', 
+                    # with_key='x',
                     as_=['value'], default='noval'
                     )
                 transforms.append(data_transform)

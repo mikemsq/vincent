@@ -8,7 +8,8 @@ __all__ = [
     "AxisProperties", "Axis", "initialize_notebook"
 ]
 
-from vincent.charts import (Chart, Bar, Line, Area, Scatter, StackedBar, StackedArea,
+from vincent.charts import (Chart, Bar, Line, Area, Scatter,
+                            StackedBar, StackedArea,
                             GroupedBar, Map, Pie, Word)
 from vincent.visualization import Visualization
 from vincent.data import Data

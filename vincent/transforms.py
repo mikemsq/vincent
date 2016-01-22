@@ -22,7 +22,7 @@ class AggregateSpec(GrammarClass):
     @grammar(list)
     def ops(value):
 
-        valid_aggregate_ops  = frozenset([
+        valid_aggregate_ops = frozenset([
             "values",
             "count",
             "valid",
@@ -254,10 +254,6 @@ class Transform(GrammarClass):
 
     @grammar(list)
     def keys(value):
-        pass
-
-    @grammar(list, grammar_name="as")
-    def as_(value):
         pass
 
     @grammar(str_types)
